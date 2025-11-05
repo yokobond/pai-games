@@ -1,0 +1,22 @@
+{
+    "include": [
+        "**/*.py"
+    ],
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__"
+    ],
+    "defineConstant": {
+        "MICROPYTHON": true
+    },
+    "executionEnvironments": [
+        {
+            "root": ".",
+            "pythonVersion": "3.4",
+            "extraPaths": []
+        }
+    ],
+    "typeCheckingMode": "off",
+    "reportMissingImports": "none",
+    "reportUndefinedVariable": "none",
+}

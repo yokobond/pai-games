@@ -1,0 +1,22 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+env/
+# Editor settings
+.vscode/
+*.code-workspace
+
+# OS artifacts
+.DS_Store
+
+# Tooling
+.pyright
+.pytest_cache/
+ruff_cache/
