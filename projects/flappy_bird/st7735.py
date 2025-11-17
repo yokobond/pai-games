@@ -67,8 +67,8 @@ MAGENTA = 0xF81F
 YELLOW = 0xFFE0
 WHITE = 0xFFFF
 
-class ST7735R:
-    def __init__(self, spi, cs, dc, rst, width=128, height=160, bgr=True, xoffset=0, yoffset=0):
+class ST7735:
+    def __init__(self, spi, cs, dc, rst, width=128, height=160, bgr=True, xoffset=0, yoffset=0, rotation=0):
         self.spi = spi
         self.cs = cs
         self.dc = dc
@@ -78,6 +78,8 @@ class ST7735R:
         # BGR color ordering flag (most ST7735 displays use BGR)
         # If colors look wrong, try toggling this value
         self.bgr = bgr
+        # Display rotation (0, 90, 180, 270 degrees)
+        self.rotation = rotation
         # Display RAM offset (common for 128x160 displays: xoffset=2, yoffset=1)
         self.xoffset = xoffset
         self.yoffset = yoffset
@@ -159,7 +161,19 @@ class ST7735R:
 
         # Memory data access control (orientation + RGB/BGR)
         # Set bit 0x08 for BGR ordering (default), clear for RGB ordering
-        madctl = 0xC8 if self.bgr else 0xC0
+        # Determine MADCTL value based on rotation and color ordering
+        if self.rotation == 0:
+            madctl = 0xC8 if self.bgr else 0xC0  # Normal orientation
+        elif self.rotation == 90:
+            madctl = 0x68 if self.bgr else 0x60  # 90 degrees clockwise
+        elif self.rotation == 180:
+            madctl = 0x08 if self.bgr else 0x00  # 180 degrees
+        elif self.rotation == 270:
+            madctl = 0xA8 if self.bgr else 0xA0  # 270 degrees clockwise (90 counter-clockwise)
+        else:
+            # Default to normal orientation if invalid rotation value
+            madctl = 0xC8 if self.bgr else 0xC0
+        
         self.write_cmd(ST7735_MADCTL)
         self.write_data(bytearray([madctl]))
 
@@ -180,10 +194,23 @@ class ST7735R:
     
     def set_window(self, x0, y0, x1, y1):
         # Apply display offset to align with physical display
-        x0 += self.xoffset
-        x1 += self.xoffset
-        y0 += self.yoffset
-        y1 += self.yoffset
+        # Adjust coordinates based on rotation
+        if self.rotation == 0:
+            x0, x1 = x0 + self.xoffset, x1 + self.xoffset
+            y0, y1 = y0 + self.yoffset, y1 + self.yoffset
+        elif self.rotation == 90:
+            x0, x1 = x0 + self.yoffset, x1 + self.yoffset
+            y0, y1 = y0 + self.xoffset, y1 + self.xoffset
+            # Swap width and height for 90-degree rotation
+            self.width, self.height = self.height, self.width
+        elif self.rotation == 180:
+            x0, x1 = x0 + self.xoffset, x1 + self.xoffset
+            y0, y1 = y0 + self.yoffset, y1 + self.yoffset
+        elif self.rotation == 270:
+            x0, x1 = x0 + self.yoffset, x1 + self.yoffset
+            y0, y1 = y0 + self.xoffset, y1 + self.xoffset
+            # Swap width and height for 270-degree rotation
+            self.width, self.height = self.height, self.width
         
         self.write_cmd(ST7735_CASET)
         self.write_data(bytearray([0x00, x0, 0x00, x1]))

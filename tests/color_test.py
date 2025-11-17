@@ -5,7 +5,7 @@ RGB/BGR configuration verification
 
 from machine import Pin, SPI
 import time
-import st7735
+import st7735 as st7735
 
 def color_test_screen(display, btn_a):
     """
@@ -96,7 +96,7 @@ def setup_display_and_test():
     # ディスプレイ初期化
     # bgr=True: BGR byte order (青が強く表示される場合はFalseに変更)
     # xoffset=2, yoffset=1 で右端と下端のランダムドットを修正
-    display = st7735.ST7735R(spi, cs=cs, dc=dc, rst=rst, width=128, height=160, bgr=False, xoffset=2, yoffset=1)
+    display = st7735.ST7735(spi, cs=cs, dc=dc, rst=rst, width=128, height=160, bgr=False, xoffset=2, yoffset=1)
     display.init()
     
     print("Color Test Screen - Press A to continue")
