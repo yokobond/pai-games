@@ -12,17 +12,17 @@ Raspberry Pi PicoとTFTディスプレイを使用したフラッピーバード
 ## ピン配線
 
 ### TFTディスプレイ (SPI)
-- SCK: GPIO 2
-- MOSI: GPIO 3
-- MISO: GPIO 4
-- CS: GPIO 5
-- DC: GPIO 6
-- RST: GPIO 7
+- SCK(SCL): GPIO 2
+- MOSI(SDA): GPIO 3
+- RST: GPIO 4
+- DC(A0): GPIO 5
+- CS: GPIO 6
+- BL(LED): VCC（常時点灯）
 - VCC: 3.3V
 - GND: GND
 
 ### ボタン
-- Aボタン (ジャンプ): GPIO 8 (プルアップ、GNDに接続)
+- Aボタン (ジャンプ): GPIO 28 (プルアップ、GNDに接続)
 
 ### ブザー
 - パッシブブザー: GPIO 22
@@ -99,7 +99,7 @@ JUMP_STRENGTH = -6    # ジャンプ力（絶対値が大きいほど高く飛�
 ### ボタンが反応しない
 - プルアップ抵抗が有効になっているか確認
 - ボタンがGNDに正しく接続されているか確認
-- 正しいGPIOピン（GPIO 8）に接続されているか確認
+- 正しいGPIOピン（GPIO 28）に接続されているか確認
 
 ### 動作が遅い
 - `time.sleep_ms(30)`の値を大きくしてフレームレートを下げる

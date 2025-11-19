@@ -6,7 +6,7 @@ Flappy Bird Game for Raspberry Pi Pico
 from machine import Pin, SPI, PWM
 import time
 import random
-import st7735
+import st7735 as st7735
 
 # ハードウェア設定
 # ディスプレイ用SPI設定（ST7735S）
@@ -18,16 +18,16 @@ rst = Pin(4, Pin.OUT)
 # BL(バックライト)はVCCに接続
 
 # ボタン設定
-btn_a = Pin(8, Pin.IN, Pin.PULL_UP)  # ジャンプボタン
+btn_a = Pin(28, Pin.IN, Pin.PULL_UP)  # ジャンプボタン
 
 # ブザー設定
-buzzer = PWM(Pin(22))
+buzzer = PWM(Pin(0))
 
 # ディスプレイ初期化
 # Some ST7735 modules use BGR byte order. If your display shows
 # a strong blue tint, set bgr=False to use RGB ordering.
 # xoffset=2, yoffset=1 で右端と下端のランダムドットを修正
-display = st7735.ST7735R(spi, cs=cs, dc=dc, rst=rst, width=128, height=160, bgr=False, xoffset=2, yoffset=1)
+display = st7735.ST7735(spi, cs=cs, dc=dc, rst=rst, width=128, height=160, bgr=False, xoffset=2, yoffset=1, rotation=180)
 display.init()
 
 # ゲーム定数

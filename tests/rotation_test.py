@@ -60,7 +60,7 @@ def setup_display_and_test():
     # BL (backlight) connected to VCC
     
     # Button configuration
-    btn_a = Pin(28, Pin.IN, Pin.PULL_UP)
+    btn_next = Pin(11, Pin.IN, Pin.PULL_UP)
     
     print("180-Degree Rotation Test")
     print("Initializing display with normal orientation...")
@@ -72,10 +72,10 @@ def setup_display_and_test():
     display_normal.init()
     rotation_test_screen(display_normal)
     
-    print("Normal orientation displayed. Press A to continue...")
+    print("Normal orientation displayed. Connect GPIO 11 to GND to continue...")
     
     # Wait for button press
-    while btn_a.value() == 1:
+    while btn_next.value() == 1:
         time.sleep_ms(50)
     # Debounce
     time.sleep_ms(200)
@@ -89,10 +89,10 @@ def setup_display_and_test():
     display_rotated.init()
     rotation_test_screen(display_rotated)
     
-    print("180-degree rotation displayed. Press A to exit...")
+    print("180-degree rotation displayed. Connect GPIO 11 to GND to exit...")
     
     # Wait for button press
-    while btn_a.value() == 1:
+    while btn_next.value() == 1:
         time.sleep_ms(50)
     
     print("Rotation Test Complete")

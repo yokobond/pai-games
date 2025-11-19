@@ -91,7 +91,7 @@ def setup_display_and_test():
     # BL(バックライト)はVCCに接続
     
     # ボタン設定
-    btn_a = Pin(8, Pin.IN, Pin.PULL_UP)
+    btn_exit = Pin(11, Pin.IN, Pin.PULL_UP)
     
     # ディスプレイ初期化
     # bgr=True: BGR byte order (青が強く表示される場合はFalseに変更)
@@ -99,8 +99,8 @@ def setup_display_and_test():
     display = st7735.ST7735(spi, cs=cs, dc=dc, rst=rst, width=128, height=160, bgr=False, xoffset=2, yoffset=1)
     display.init()
     
-    print("Color Test Screen - Press A to continue")
-    color_test_screen(display, btn_a)
+    print("Color Test Screen - Connect GPIO 11 to GND for exit")
+    color_test_screen(display, btn_exit)
     print("Color Test Complete")
 
 if __name__ == "__main__":

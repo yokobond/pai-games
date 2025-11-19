@@ -2,15 +2,25 @@
 
 このドキュメントは、プロジェクトで使用するハードウェア部品とその使用方法について説明します。
 
-## ハードウェア
-
-### マイコンボード
-- **ボード**: Raspberry Pi Pico (RP2040)
+## マイコンボード
+- **ボード**: RP2040 マイクロコントローラ搭載ボード
 - **フラッシュメモリ**: 2MB
 - **RAM**: 264KB
 - **GPIO ピン**: 26本の多機能GPIOピン
 
-### 電子部品
+### 参照ボード
+
+- PR2040 Pro Micro Clone
+Raspberry Pi Picoと同じMCU(RP2040)でつくられた Arudino Pro Micro のクローンボード
+
+![alt text](pr2040_pro_micro_clone.png)
+
+### 購入リンク
+https://ja.aliexpress.com/item/1005009890367599.html
+
+
+## 入出力デバイス構成
+
 - **ディスプレイ**: 1.8インチ TFT液晶ディスプレイモジュール
   - ドライバIC: ST7735S
   - インタフェース: SPI
@@ -19,13 +29,11 @@
 - **入力コントロール**:
   - 方向操作用タクトスイッチ: 4個 (上、下、左、右)
   - アクションボタン: 2個 (A、B)
-  - システムボタン: 2個 (START、SELECT)
+  - システムボタン: 1個 (START)
 - **オーディオ**:
   - パッシブブザー: 1個
 
-## ハードウェア部品の使用例
-
-### ST7735S TFTディスプレイ (SPI)
+## ST7735S TFTディスプレイ (SPI)
 ```python
 from machine import Pin, SPI
 import st7735  # カスタムドライバライブラリ
@@ -46,7 +54,7 @@ display = st7735.ST7735R(spi, cs=cs, dc=dc, rst=rst,
 display.init()
 ```
 
-#### 色設定のトラブルシューティング
+### 色設定のトラブルシューティング
 
 ST7735ディスプレイモジュールは製造元によって色のバイト順序（RGB vs BGR）が異なります。
 
@@ -66,7 +74,7 @@ ST7735ディスプレイモジュールは製造元によって色のバイト�
    display = st7735.ST7735R(..., bgr=False)
    ```
 
-#### 技術詳細：RGB565とバイトスワップ
+### 技術詳細：RGB565とバイトスワップ
 
 **RGB565フォーマット**
 - 16ビット（2バイト）で1ピクセルを表現
@@ -106,13 +114,15 @@ def swap_bytes(dest, src, length: int):
 
 この最適化により、常にバイトスワップを実行してもフレームレート低下はありません。
 
-### タクトスイッチ（方向操作）
+## 入力コントロール
+
+### 方向ボタン (上、下、左、右)
 ```python
 # 方向ボタン
-btn_up = Pin(12, Pin.IN, Pin.PULL_UP)
-btn_down = Pin(13, Pin.IN, Pin.PULL_UP)
-btn_left = Pin(14, Pin.IN, Pin.PULL_UP)
-btn_right = Pin(15, Pin.IN, Pin.PULL_UP)
+btn_up = Pin(23, Pin.IN, Pin.PULL_UP)
+btn_down = Pin(26, Pin.IN, Pin.PULL_UP)
+btn_left = Pin(21, Pin.IN, Pin.PULL_UP)
+btn_right = Pin(27, Pin.IN, Pin.PULL_UP)
 
 # ボタン状態の読み取り (0 = 押下、1 = 未押下)
 if btn_up.value() == 0:
@@ -121,8 +131,8 @@ if btn_up.value() == 0:
 
 ### アクションボタン (A, B)
 ```python
-btn_a = Pin(8, Pin.IN, Pin.PULL_UP)
-btn_b = Pin(16, Pin.IN, Pin.PULL_UP)
+btn_a = Pin(28, Pin.IN, Pin.PULL_UP)
+btn_b = Pin(29, Pin.IN, Pin.PULL_UP)
 
 # チャタリング防止付きボタン読み取り
 def read_button(button):
@@ -133,22 +143,21 @@ def read_button(button):
     return False
 ```
 
-### システムボタン (START, SELECT)
+### システムボタン (START)
 ```python
-btn_start = Pin(10, Pin.IN, Pin.PULL_UP)
-btn_select = Pin(11, Pin.IN, Pin.PULL_UP)
+btn_start = Pin(11, Pin.IN, Pin.PULL_UP)
 
 # ゲーム開始やポーズに使用
 if btn_start.value() == 0:
     print("STARTボタンが押されました")
 
-if btn_select.value() == 0:
-    print("SELECTボタンが押されました")
 ```
+
+## オーディオ
 
 ### パッシブブザー
 ```python
-buzzer = PWM(Pin(22))
+buzzer = PWM(Pin(0))
 
 # トーン再生 (周波数はHz、持続時間はms)
 def play_tone(frequency, duration):
@@ -171,15 +180,14 @@ play_tone(440, 200)
   - CS: GPIO 6
   - BL(LED): VCC（常時点灯）
 - **方向ボタン**:
-  - 上: GPIO 12
-  - 下: GPIO 13
-  - 左: GPIO 14
-  - 右: GPIO 15
+  - 上: GPIO 23
+  - 下: GPIO 26
+  - 左: GPIO 21
+  - 右: GPIO 27
 - **アクションボタン**:
-  - A: GPIO 8
-  - B: GPIO 16
+  - A: GPIO 28
+  - B: GPIO 29
 - **システムボタン**:
-  - START: GPIO 10
-  - SELECT: GPIO 11
-- **パッシブブザー**: GPIO 22
+  - START: GPIO 11
+- **パッシブブザー**: GPIO 0
 - **オンボードLED**: GPIO 25
